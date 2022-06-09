@@ -44,21 +44,16 @@ describe('vote', function () {
             .connect(owner)
             .createBallot(ballotTitle, candidatesAddrList)
     })
-    it('should successfully let a person vote', async function () {
-        await voting.connect(voter1).vote(ballotTitle, String(candidate1addr), {
-            value: DEFAULT_VALUE,
-        })
-        let info = await voting.getBallotInfo(ballotTitle)
-        let balance = info[6] / 10 ** 18 // to eth
-        expect(balance).to.equal(0.01)
-    })
-    it('should correctly emit the personVoted event', async function () {
+    it('should successfully let a person vote and emit the personVoted event', async function () {
         tx = await voting
             .connect(voter1)
             .vote(ballotTitle, String(candidate1addr), {
                 value: DEFAULT_VALUE,
             })
         await tx.wait()
+        let info = await voting.getBallotInfo(ballotTitle)
+        let balance = info[2] / 10 ** 18 // to eth
+        expect(balance).to.equal(0.01)
         expect(tx)
             .to.emit(voting, 'personVoted')
             .withArgs(

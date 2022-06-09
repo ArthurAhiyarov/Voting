@@ -70,9 +70,9 @@ describe('createBallot', async function () {
         let testName = 'Test name'
         await voting.connect(owner).createBallot(testName, candidatesAddrList)
         let info = await voting.getBallotInfo(testName)
-        let candidate1addrStr = info[8][0]
-        let candidate2addrStr = info[8][1]
-        let candidate3addrStr = info[8][2]
+        let candidate1addrStr = info[4][0]
+        let candidate2addrStr = info[4][1]
+        let candidate3addrStr = info[4][2]
         expect(info).not.to.be.undefined
         expect(candidate1addrStr).to.equal(String(candidate1addr))
         expect(candidate2addrStr).to.equal(String(candidate2addr))

@@ -76,42 +76,19 @@ contract VotingContract is Ownable {
     function getBallotInfo(string calldata ballotTitle) 
         external 
         view
-        returns (BallotState state, uint totalTimeInSecondsLeft, uint daysLeft, uint hoursLeft, uint minutesLeft, uint secondsLeft,
-         uint balance, address[] memory winners, address[] memory candidates)
+        returns (BallotState state, uint totalTimeInSecondsLeft, uint balance, address[] memory winners, address[] memory candidates)
     {
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline > 0, "There is no such ballot.");
         uint nowTime = block.timestamp;
         uint totalLeftTime_;
-        uint days_;
-        uint hours_;
-        uint minutes_;
-        uint seconds_;
 
         if ((ballot.state == BallotState.Active && nowTime >= ballot.deadline) || (ballot.state == BallotState.Finished)) {
             totalLeftTime_ = 0;
-            days_ = 0;
-            hours_ = 0;
-            minutes_ = 0;
-            seconds_ = 0;
         } else {
                 totalLeftTime_ = ballot.deadline - nowTime;
-                uint timeLeft = ballot.deadline - nowTime;
-                days_ = timeLeft / 1 days;
-                if(timeLeft >= 1 days) {
-                    timeLeft = timeLeft % 1 days;
-                }
-                hours_ = timeLeft / 1 hours;
-                if(timeLeft >= 1 hours) {
-                    timeLeft = timeLeft % 1 hours;
-                }
-                minutes_ = timeLeft / 1 minutes;
-                if(timeLeft >= 1 minutes) {
-                    timeLeft = timeLeft % 1 minutes;
-                }
-                seconds_ = timeLeft;
             }
-        return (ballot.state, totalLeftTime_, days_, hours_, minutes_, seconds_, ballot.balance, ballot.winnersList, ballot.candidatesAddresses);
+        return (ballot.state, totalLeftTime_, ballot.balance, ballot.winnersList, ballot.candidatesAddresses);
     }
 
 

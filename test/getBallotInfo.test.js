@@ -49,14 +49,15 @@ describe('getBallotInfo', async function () {
         ).to.be.revertedWith('There is no such ballot.')
     })
     it('should show correct info if a deadline is not passed', async function () {
+        await ethers.provider.send('evm_mine', [
+            (await getBlockTimeStamp(voting.blockNumber)) + 5,
+        ])
         let info = await voting.getBallotInfo(ballotTitle)
-
         let totalSecondsLeft = info[1]
-        let candidate1addrStr = info[8][0]
-        let candidate2addrStr = info[8][1]
-        let candidate3addrStr = info[8][2]
-
-        expect(+totalSecondsLeft).to.be.above(259198)
+        let candidate1addrStr = info[4][0]
+        let candidate2addrStr = info[4][1]
+        let candidate3addrStr = info[4][2]
+        expect(+totalSecondsLeft).to.be.above(259190) //almost 3 days
         expect(candidate1addrStr).to.equal(String(candidate1addr))
         expect(candidate2addrStr).to.equal(String(candidate2addr))
         expect(candidate3addrStr).to.equal(String(candidate3addr))

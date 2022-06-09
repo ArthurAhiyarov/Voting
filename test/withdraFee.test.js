@@ -100,12 +100,12 @@ describe('withdrawFee', function () {
             (await getBlockTimeStamp(voting.blockNumber)) + BALLOT_DURATION + 1,
         ])
         let infoBefore = await voting.getBallotInfo(ballotTitle) //before ending voting
-        let ballotBalance = infoBefore[6] //ballot balance after all votes
+        let ballotBalance = infoBefore[2] //ballot balance after all votes
         let ownerComission = ballotBalance / 10 //owner's 10%
         await voting.connect(testUser).endVoting(ballotTitle)
         withdrawTX = await voting.connect(owner).withdrawFee(ballotTitle)
         let infoAfter = await voting.getBallotInfo(ballotTitle) //after withdraw
-        let newBalance = infoAfter[6]
+        let newBalance = infoAfter[2]
 
         expect(withdrawTX).to.changeEtherBalance(owner, ownerComission)
         expect(withdrawTX)
