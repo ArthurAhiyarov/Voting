@@ -3,7 +3,7 @@ const { ethers } = require('hardhat')
 
 const DEFAULT_VALUE = ethers.utils.parseEther('0.01')
 
-describe('getWinnerList', function () {
+describe('createWinnerList', function () {
     let owner,
         testUser,
         candidate1,
@@ -39,23 +39,22 @@ describe('getWinnerList', function () {
             .connect(owner)
             .createBallot(ballotTitle, candidatesAddrList)
     })
-    it('should fail if a wrong title was given', async function () {
+
+    it('should fail if a nonexisting title was given', async function () {
         await expect(
-            voting.connect(testUser).getWinnerList('Wrong Title')
+            voting.connect(testUser).createWinnerList('Wrong Title')
         ).to.be.revertedWith('There is no such ballot!')
     })
-    it('should give an empty array if the createWinnerList function has NOT been used', async function () {
-        let info = await voting.connect(testUser).getWinnerList(ballotTitle)
-        expect(info).to.have.lengthOf(0)
-    })
-    it('should give correct data if the createWinnerList function has been used', async function () {
+    it('should provide correct data on current winners', async function () {
         await voting.connect(voter1).vote(ballotTitle, String(candidate1addr), {
             value: DEFAULT_VALUE,
         })
+        let info = await voting.getWinnerList(ballotTitle)
+        expect(info).to.have.lengthOf(0)
         await voting.connect(testUser).createWinnerList(ballotTitle)
-        let Info = await voting.getWinnerList(ballotTitle)
-        expect(Info).to.have.lengthOf(1)
-        let winnerCandidate = Info[0]
+        let newInfo = await voting.getWinnerList(ballotTitle)
+        expect(newInfo).to.have.lengthOf(1)
+        let winnerCandidate = newInfo[0]
         expect(winnerCandidate).to.be.equal(candidate1addr)
     })
 })

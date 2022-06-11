@@ -35,6 +35,7 @@ contract VotingContract is Ownable {
         mapping(address => Candidate) candidates;
         address[] candidatesAddresses;
         mapping (address => Voter) voters;
+        mapping(address => uint) uniqueCandidates;
 
     }
 
@@ -51,12 +52,19 @@ contract VotingContract is Ownable {
 
         require(candidateAddresses.length >= 2, "There should be at least 2 candidates in a Ballot!");
         require(ballots[ballotTitle].deadline == 0, "A ballot with such title already exists!");
+
         Ballot storage newBallot = ballots[ballotTitle];
         newBallot.deadline = block.timestamp + DURATION;
         newBallot.title = ballotTitle;
         newBallot.balance = 0;
         newBallot.state = BallotState.Active;
         newBallot.feeWithdrawed = false;
+
+        for (uint i = 0; i < candidateAddresses.length; i++) {
+            address candidateAddr = candidateAddresses[i];
+            require(newBallot.uniqueCandidates[candidateAddr] == 0, "All candidates must be unique!");
+            newBallot.uniqueCandidates[candidateAddr] = i + 1;
+        }
 
         mapping(address => Candidate) storage candidates = newBallot.candidates;
         address[] storage candidatesAddresses = newBallot.candidatesAddresses;
@@ -108,7 +116,14 @@ contract VotingContract is Ownable {
         emit personVoted(ballot.title, msg.sender, block.timestamp);
     }
 
-    function getWinnerList(string calldata ballotTitle) external returns(address[] memory winnersList){
+    function getCandidateVotesCount(string calldata ballotTitle, address candidateAddress) external view returns(uint votesCount){
+        Ballot storage ballot = ballots[ballotTitle];
+        require(ballot.deadline != 0, "There is no such ballot!");
+        require(ballot.candidates[candidateAddress].addr == candidateAddress, "There is no such candidate in this ballot!");
+        return ballot.candidates[candidateAddress].votesCount;
+    }
+
+    function createWinnerList(string calldata ballotTitle) external returns(address[] memory winnersList){
 
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline != 0, "There is no such ballot!");
@@ -118,16 +133,23 @@ contract VotingContract is Ownable {
 
         for (uint index; index < candidatesAddresses.length; index++) {
             address candidateAddress = candidatesAddresses[index];
-            if (candidates[candidateAddress].votesCount > maxVotes) {
+            if (candidates[candidateAddress].votesCount >= maxVotes) {
                 maxVotes = candidates[candidateAddress].votesCount;
             }
         }
+        delete ballot.winnersList;
         for (uint index; index < candidatesAddresses.length; index++) {
             address candidateAddress = candidatesAddresses[index];
             if (candidates[candidateAddress].votesCount == maxVotes) {
                 ballot.winnersList.push(candidateAddress);
             }
         }
+        return ballot.winnersList;
+    }
+
+    function getWinnerList(string calldata ballotTitle) external view returns(address[] memory winnersList){
+        Ballot storage ballot = ballots[ballotTitle];
+        require(ballot.deadline != 0, "There is no such ballot!");
         return ballot.winnersList;
     }
 
@@ -139,7 +161,7 @@ contract VotingContract is Ownable {
         require(ballot.deadline < block.timestamp, "It is too early to finish this ballot!");
 
         ballot.state = BallotState.Finished;
-        address[] memory winnersList = this.getWinnerList(ballotTitle);
+        address[] memory winnersList = this.createWinnerList(ballotTitle);
         uint winnersAmount = winnersList.length;
         if (winnersAmount == 1) {
             address payable winnerAddress = payable(ballot.winnersList[0]);

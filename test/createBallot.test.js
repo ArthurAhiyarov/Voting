@@ -66,6 +66,18 @@ describe('createBallot', async function () {
         ).to.be.revertedWith('A ballot with such title already exists!')
     })
 
+    it('should fail candidates are not unique', async function () {
+        let notUniqueAddrList = [
+            candidate1addr,
+            candidate2addr,
+            candidate3addr,
+            candidate3addr,
+        ]
+        await expect(
+            voting.connect(owner).createBallot('Title', notUniqueAddrList)
+        ).to.be.revertedWith('All candidates must be unique!')
+    })
+
     it('should successfully create a new ballot', async function () {
         let testName = 'Test name'
         await voting.connect(owner).createBallot(testName, candidatesAddrList)
