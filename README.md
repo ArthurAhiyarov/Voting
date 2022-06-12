@@ -30,10 +30,15 @@ The other option is *Rinkeby* testnet. In this case you need to add these variab
 PRIVATE_KEY=0x<YOUR_PRIVE_KEY>
 WEB3_INFURA_PROJECT_ID=<WEB3_INFURA_PROJECT_ID>
 ```
+After adding them you can deploy the contract by this command:
+```shell
+npx hardhat run scripts/deploy.js --network rinkeby
+```
+In console you will be able to see the address where the contract has been deployed to.
 
 
 
-Try running some of the following tasks:
+# :page_with_curl: Full list of commands
 
 ```shell
 npx hardhat accounts
@@ -41,7 +46,6 @@ npx hardhat compile
 npx hardhat clean
 npx hardhat test
 npx hardhat node
-node scripts/sample-script.js
 npx hardhat help
 npx hardhat console                       
 npx hardhat coverage
