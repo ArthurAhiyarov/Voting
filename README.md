@@ -1,6 +1,8 @@
 # :raising_hand_man::raising_hand_man::raising_hand_man: Voting Hardhat Project
 
-This smart contract project is a test for CryptonStudio training course. It comes with a Solidity contract, deploy, test and task scripts.  
+This smart contract project is a test for CryptonStudio training course. It comes with a Solidity contract, deploy, test and task scripts. The task was to create a smart contract that will allow to conduct 3 day long ballots where any blockchain participant can vote by paing 0.01 eth.
+# Project Description
+
 
 Try running some of the following tasks:
 
