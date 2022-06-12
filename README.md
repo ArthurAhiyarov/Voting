@@ -5,7 +5,16 @@ This smart contract project is a test for CryptonStudio training course. It come
 # :hammer_and_wrench: Project Description
 In addition to what is written above, ballots can be created only by the owner of the contract. At least 2 unique candidates must be included to a ballot, it is allowed to add the same candidates into different ballots. Any person can vote once for a candidate in a ballot paying the fee of 0.01 eth. The duration of all ballots is 3 days, after that period any person can finish a voting process to figure out winners. In a case of equal numbers of votes for candidates they share the prize eth, 10% of it stays at the contract. The latter can be withdrawed by the owner of the contract.
 
-# Tests
+# :triangular_ruler: Tests
+
+Unit tests for this contract can by:
+```shell
+npx hardhat test
+```
+To see a coverage percentage you can use:
+```shell
+npx hardhat coverage
+```
 
 Try running some of the following tasks:
 
