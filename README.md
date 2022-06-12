@@ -1,4 +1,4 @@
-# :raising_hand_man::raising_hand_man::raising_hand_man: Voting Hardhat Project
+# :raising_hand_man::raising_hand_man::raising_hand_man: Voting Hardhat Project https://img.shields.io/appveyor/tests/ArthurAhiyarov/Voting
 
 This smart contract project is a test for CryptonStudio training course. It comes with a Solidity contract, deploy, test and task scripts.  
 
