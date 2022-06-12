@@ -3,6 +3,9 @@ require('@nomiclabs/hardhat-waffle')
 require('hardhat-gas-reporter')
 require('solidity-coverage')
 require('@nomiclabs/hardhat-etherscan')
+require('hardhat-dependency-compiler')
+
+require('./tasks/Tasks.js')
 
 const { WEB3_INFURA_PROJECT_ID, PRIVATE_KEY, REPORT_GAS, ETHERSCAN_API_KEY } =
     process.env

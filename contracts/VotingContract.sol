@@ -6,7 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract VotingContract is Ownable {
 
+    //Duration of ballots after which they can be finished manually
     uint constant DURATION = 3 days;
+    //Fee to be able to vote for a candidate
     uint constant FEE = 10 ** 16; // wei
 
     struct Candidate {
@@ -43,11 +45,29 @@ contract VotingContract is Ownable {
 
     mapping(string => Ballot) public ballots;
 
+    /*
+        EVENTS
+    */
+
+    // Emitted when a ballot is successfully created
     event createdBallot(string title, uint deadline, uint timeCreated);
+    //Emitted when a person has successfully voted
     event personVoted(string ballotTitle, address voterAddress, uint voteTime);
+    //Emitted when comission is withdrawed by the owner
     event feeWithdrawed(string ballotTitle, uint withdrawTime);
+    //Emitted when a ballot was successfully finished
     event votingEnded(string ballotTitle, uint endTime);
 
+    /*
+        FUNCTIONS
+    */
+
+    /** @dev Creates a new ballot
+      * @param ballotTitle Title for a new ballot
+      * @param candidateAddresses A list of candidates' addresses in string format
+      * Emits a createdBallot event
+      * Note: the same candidate can be present in different ballots, but two ballots with the same name cannot be created
+     */
     function createBallot(string calldata ballotTitle, address[] calldata candidateAddresses) external onlyOwner {
 
         require(candidateAddresses.length >= 2, "There should be at least 2 candidates in a Ballot!");
@@ -81,6 +101,15 @@ contract VotingContract is Ownable {
         emit createdBallot(ballotTitle, newBallot.deadline, block.timestamp);
     }
 
+    /** @dev Provides info on a ballot
+      * @param ballotTitle Title of a ballot to get info about
+      * @return state State of a ballot
+      * @return totalTimeInSecondsLeft Time in seconds left till it's possible to finish a voting process 
+      * @return balance Ballot's balance
+      * @return winners A list of candidates with the highest votes count (if createWinnerList function has been used)
+      * @return candidates A list of all candidates addresses in a ballot
+     */
+
     function getBallotInfo(string calldata ballotTitle) 
         external 
         view
@@ -99,6 +128,11 @@ contract VotingContract is Ownable {
         return (ballot.state, totalLeftTime_, ballot.balance, ballot.winnersList, ballot.candidatesAddresses);
     }
 
+    /** @dev Lets a person vote for a candidate in a ballot
+      * @param ballotTitle A title of a ballot where the needed candiidate is
+      * @param candidateAddress Candeidate's address
+      * Emits personVoted event
+     */
 
     function vote(string calldata ballotTitle, address candidateAddress) external payable {
         
@@ -116,12 +150,25 @@ contract VotingContract is Ownable {
         emit personVoted(ballot.title, msg.sender, block.timestamp);
     }
 
+    /** @dev Returns a number of votes of a candidate
+      * @param ballotTitle A title of a ballot where the needed candiidate is
+      * @param candidateAddress Candeidate's address
+      * @return votesCount A number of votes of a candidate in a given ballot
+     */
+
     function getCandidateVotesCount(string calldata ballotTitle, address candidateAddress) external view returns(uint votesCount){
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline != 0, "There is no such ballot!");
         require(ballot.candidates[candidateAddress].addr == candidateAddress, "There is no such candidate in this ballot!");
         return ballot.candidates[candidateAddress].votesCount;
     }
+
+    /** @dev Fills a list named winnersList in a ballot struct with candidates with the highest votes count
+      * @param ballotTitle A ballot title to find out current winners
+      * @return winnersList A list of leading candidates
+      * Note: this function is primarily created for the endVoting function to determine the winners.
+      * To view info in a more nice-looking way use the getWinnerList function
+     */
 
     function createWinnerList(string calldata ballotTitle) external returns(address[] memory winnersList){
 
@@ -147,11 +194,23 @@ contract VotingContract is Ownable {
         return ballot.winnersList;
     }
 
+    /** @dev Shows a list of the leading candidates in a ballot 
+      * @param ballotTitle A ballot title to get current winners from
+      * @return winnersList A list of leading candidates
+     */
+
     function getWinnerList(string calldata ballotTitle) external view returns(address[] memory winnersList){
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline != 0, "There is no such ballot!");
         return ballot.winnersList;
     }
+
+    /** @dev Finishes a voting process in a ballot and transfers prize money if all requirements are satisfied
+      * @param ballotTitle A title of a ballot to finish
+      * @return winnersList_ Returns a list of winners
+      * Emits votingEnded event
+     */
+
 
     function endVoting(string calldata ballotTitle) external returns (address[] memory winnersList_){
 
@@ -178,6 +237,12 @@ contract VotingContract is Ownable {
         emit votingEnded(ballotTitle, block.timestamp);
         return ballot.winnersList;
     }
+
+    /** @dev Lets the owner withdraw fee eth from a ballot if all requirements are satisfied
+      * @param ballotTitle A ballot's title to withdraw fee from
+      * Emits feeWithdrawed event
+     */
+
 
     function withdrawFee(string calldata ballotTitle) external onlyOwner {
 
