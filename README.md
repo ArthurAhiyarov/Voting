@@ -21,7 +21,17 @@ npx hardhat coverage
 ```
 # :toolbox: How to deploy
 
-The default network is *hardhat*
+The default network is *hardhat*. In order to deploy the smart contract to it just run this command:
+```shell
+npx hardhat run scripts/deploy.js
+```
+The other option is *Rinkeby* testnet. In this case you need to add these variables to your .env file:
+```shell
+PRIVATE_KEY=0x<YOUR_PRIVE_KEY>
+WEB3_INFURA_PROJECT_ID=<WEB3_INFURA_PROJECT_ID>
+```
+
+
 
 Try running some of the following tasks:
 
