@@ -11,7 +11,7 @@ In addition to what is written above:
 
 # :triangular_ruler: Tests
 
-Unit tests for this contract can by:
+Unit tests for this contract can be run by:
 ```shell
 npx hardhat test
 ```
