@@ -19,6 +19,9 @@ To see a coverage percentage you can use:
 ```shell
 npx hardhat coverage
 ```
+# :toolbox: How to deploy
+
+The default network is *hardhat*
 
 Try running some of the following tasks:
 
