@@ -9,6 +9,9 @@ async function main() {
     await VotingContract.deployed()
 
     console.log('VotingContract deployed to:', VotingContract.address)
+    console.log(
+        'Do not forget to assing the address above to the CONTRACT_ADDRESS variable in your .env file. Otherwise hardhat tasks will not work properly.'
+    )
 }
 
 main()

@@ -40,7 +40,7 @@ module.exports = {
             },
         },
     },
-    defaultNetwork: 'localhost',
+    defaultNetwork: 'rinkeby',
     networks: {
         rinkeby: {
             url: `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`,
