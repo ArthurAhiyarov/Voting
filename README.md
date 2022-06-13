@@ -21,8 +21,9 @@ npx hardhat coverage
 ```
 # :toolbox: How to deploy
 
-The default network is *hardhat*. In order to deploy the smart contract to it just run this command:
+The default network is *localhost*. In order to deploy the smart contract to it run the first command in one terminal and the other in a separate terminal:
 ```shell
+npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
 The other option is *Rinkeby* testnet. In this case you need to add these variables to your .env file:
