@@ -15,8 +15,13 @@ require('./tasks/get-winner-list')
 require('./tasks/vote')
 require('./tasks/withdraw-fee')
 
-const { WEB3_INFURA_PROJECT_ID, PRIVATE_KEY, REPORT_GAS, ETHERSCAN_API_KEY } =
-    process.env
+const {
+    WEB3_INFURA_PROJECT_ID,
+    PRIVATE_KEY,
+    REPORT_GAS,
+    ETHERSCAN_API_KEY,
+    COINMARKETCAP_API_KEY,
+} = process.env
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
     const accounts = await hre.ethers.getSigners()
@@ -48,9 +53,11 @@ module.exports = {
         },
     },
     gasReporter: {
-        enabled: REPORT_GAS ? true : false,
+        enabled: REPORT_GAS,
         currency: 'USD',
-        gasPrice: 21,
+        outputFile: 'gas-report.txt',
+        noColors: true,
+        coinmarketcap: COINMARKETCAP_API_KEY,
     },
     dependencyCompiler: {
         paths: ['@openzeppelin/contracts/access/Ownable.sol'],
