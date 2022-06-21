@@ -45,7 +45,7 @@ module.exports = {
             },
         },
     },
-    defaultNetwork: 'rinkeby',
+    defaultNetwork: 'hardhat',
     networks: {
         rinkeby: {
             url: `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`,

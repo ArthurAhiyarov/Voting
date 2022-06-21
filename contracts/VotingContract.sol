@@ -32,6 +32,7 @@ contract VotingContract is Ownable {
         uint deadline;
         uint balance;
         bool feeWithdrawed;
+        uint maxVotes;
 
         address[] winnersList;
         mapping(address => Candidate) candidates;
@@ -145,6 +146,9 @@ contract VotingContract is Ownable {
 
         ballot.balance += msg.value;
         ballot.candidates[candidateAddress].votesCount++;
+        if (ballot.candidates[candidateAddress].votesCount > ballot.maxVotes) {
+            ballot.maxVotes = ballot.candidates[candidateAddress].votesCount;
+        }
         ballot.voters[msg.sender] = Voter(msg.sender, true);
 
         emit personVoted(ballot.title, msg.sender, block.timestamp);
@@ -174,20 +178,13 @@ contract VotingContract is Ownable {
 
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline != 0, "There is no such ballot!");
-        uint maxVotes = 0;
         address[] storage candidatesAddresses = ballot.candidatesAddresses;
         mapping(address => Candidate) storage candidates = ballot.candidates;
+        ballot.winnersList = new address[](0);
 
         for (uint index; index < candidatesAddresses.length; index++) {
             address candidateAddress = candidatesAddresses[index];
-            if (candidates[candidateAddress].votesCount >= maxVotes) {
-                maxVotes = candidates[candidateAddress].votesCount;
-            }
-        }
-        delete ballot.winnersList;
-        for (uint index; index < candidatesAddresses.length; index++) {
-            address candidateAddress = candidatesAddresses[index];
-            if (candidates[candidateAddress].votesCount == maxVotes) {
+            if (candidates[candidateAddress].votesCount >= ballot.maxVotes) {
                 ballot.winnersList.push(candidateAddress);
             }
         }
