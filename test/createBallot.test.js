@@ -18,6 +18,7 @@ describe('createBallot', async function () {
         candidate3addr,
         candidatesAddrList
     const ballotTitle = 'TestBallot'
+    const testName = 'Test name'
 
     beforeEach(async function () {
         ;[owner, testUser, candidate1, candidate2, candidate3] =
@@ -31,7 +32,7 @@ describe('createBallot', async function () {
 
         candidatesAddrList = [candidate1addr, candidate2addr, candidate3addr]
 
-        VotingContractFactory = await ethers.getContractFactory(
+        const VotingContractFactory = await ethers.getContractFactory(
             'VotingContract',
             owner
         )
@@ -79,7 +80,6 @@ describe('createBallot', async function () {
     })
 
     it('should successfully create a new ballot', async function () {
-        let testName = 'Test name'
         await voting.connect(owner).createBallot(testName, candidatesAddrList)
         let info = await voting.getBallotInfo(testName)
         let candidate1addrStr = info[4][0]
@@ -92,7 +92,6 @@ describe('createBallot', async function () {
         expect(info[0]).to.equal(0)
     })
     it('should correctly emit the createdBallot event', async function () {
-        let testName = 'Test name'
         const tx = await voting
             .connect(owner)
             .createBallot(testName, candidatesAddrList)

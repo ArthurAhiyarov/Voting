@@ -29,7 +29,7 @@ describe('createWinnerList', function () {
 
         candidatesAddrList = [candidate1addr, candidate2addr, candidate3addr]
 
-        VotingContractFactory = await ethers.getContractFactory(
+        const VotingContractFactory = await ethers.getContractFactory(
             'VotingContract',
             owner
         )
