@@ -144,12 +144,12 @@ contract VotingContract is Ownable {
         require(ballot.voters[msg.sender].voted == false, "You have already voted!");
         require(ballot.state == BallotState.Active, "This ballot has already finished!");
 
-        ballot.balance += msg.value;
         ballot.candidates[candidateAddress].votesCount++;
         if (ballot.candidates[candidateAddress].votesCount > ballot.maxVotes) {
             ballot.maxVotes = ballot.candidates[candidateAddress].votesCount;
         }
         ballot.voters[msg.sender] = Voter(msg.sender, true);
+        ballot.balance += msg.value;
 
         emit personVoted(ballot.title, msg.sender, block.timestamp);
     }
@@ -184,7 +184,7 @@ contract VotingContract is Ownable {
 
         for (uint index; index < candidatesAddresses.length; index++) {
             address candidateAddress = candidatesAddresses[index];
-            if (candidates[candidateAddress].votesCount >= ballot.maxVotes) {
+            if (candidates[candidateAddress].votesCount == ballot.maxVotes) {
                 ballot.winnersList.push(candidateAddress);
             }
         }

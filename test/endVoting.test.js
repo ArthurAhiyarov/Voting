@@ -12,6 +12,7 @@ async function getBlockTimeStamp(bn) {
 
 describe('endVoting', function () {
     let owner,
+        voting,
         testUser,
         candidate1,
         candidate2,

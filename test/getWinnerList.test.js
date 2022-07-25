@@ -5,6 +5,7 @@ const DEFAULT_VALUE = ethers.utils.parseEther('0.01')
 
 describe('getWinnerList', function () {
     let owner,
+        voting,
         testUser,
         candidate1,
         candidate2,

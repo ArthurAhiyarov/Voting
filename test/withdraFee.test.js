@@ -11,6 +11,7 @@ async function getBlockTimeStamp(bn) {
 
 describe('withdrawFee', function () {
     let owner,
+        voting,
         testUser,
         candidate1,
         candidate2,

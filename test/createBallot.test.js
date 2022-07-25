@@ -8,7 +8,8 @@ async function getBlockTimeStamp(bn) {
 }
 
 describe('createBallot', async function () {
-    let owner,
+    let voting,
+        owner,
         testUser,
         candidate1,
         candidate2,
@@ -81,10 +82,10 @@ describe('createBallot', async function () {
 
     it('should successfully create a new ballot', async function () {
         await voting.connect(owner).createBallot(testName, candidatesAddrList)
-        let info = await voting.getBallotInfo(testName)
-        let candidate1addrStr = info[4][0]
-        let candidate2addrStr = info[4][1]
-        let candidate3addrStr = info[4][2]
+        const info = await voting.getBallotInfo(testName)
+        const candidate1addrStr = info[4][0]
+        const candidate2addrStr = info[4][1]
+        const candidate3addrStr = info[4][2]
         expect(info).not.to.be.undefined
         expect(candidate1addrStr).to.equal(String(candidate1addr))
         expect(candidate2addrStr).to.equal(String(candidate2addr))

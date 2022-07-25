@@ -9,6 +9,7 @@ const BALLOT_DURATION = 259200
 
 describe('getBallotInfo', async function () {
     let owner,
+        voting,
         testUser,
         candidate1,
         candidate2,

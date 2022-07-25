@@ -5,6 +5,7 @@ const DEFAULT_VALUE = ethers.utils.parseEther('0.01')
 
 describe('createWinnerList', function () {
     let owner,
+        voting,
         testUser,
         candidate1,
         candidate2,
@@ -49,12 +50,12 @@ describe('createWinnerList', function () {
         await voting.connect(voter1).vote(ballotTitle, String(candidate1addr), {
             value: DEFAULT_VALUE,
         })
-        let info = await voting.getWinnerList(ballotTitle)
+        const info = await voting.getWinnerList(ballotTitle)
         expect(info).to.have.lengthOf(0)
         await voting.connect(testUser).createWinnerList(ballotTitle)
-        let newInfo = await voting.getWinnerList(ballotTitle)
+        const newInfo = await voting.getWinnerList(ballotTitle)
         expect(newInfo).to.have.lengthOf(1)
-        let winnerCandidate = newInfo[0]
+        const winnerCandidate = newInfo[0]
         expect(winnerCandidate).to.be.equal(candidate1addr)
     })
 })
