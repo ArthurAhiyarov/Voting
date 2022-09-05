@@ -252,7 +252,7 @@ contract VotingContract is Ownable {
         require(ballot.feeWithdrawed == false, "You have already withdrawed the fee from this ballot!");
 
         address payable ownerAddress = payable(msg.sender);
-        (bool sent, ) = ownerAddress.call{value: ballot.balance};
+        (bool sent, ) = ownerAddress.call{value: ballot.balance, gas: 21000};
         require(sent, "Failed to send Ether");
         ballot.balance = 0;
         ballot.feeWithdrawed = true;
