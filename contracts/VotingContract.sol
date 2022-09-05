@@ -146,7 +146,7 @@ contract VotingContract is Ownable {
         require(ballot.candidates[candidateAddress].addr == candidateAddress, "There is no such candidate in this ballot!");
         require(msg.value == FEE, "In order to vote you have to pay 10000000000000000 wei!");
         require(ballot.voters[msg.sender].voted == false, "You have already voted!");
-        require(ballot.state == BallotState.Active, "This ballot has already finished!");
+        require(ballot.state == BallotState.Active, "This ballot must be Active!");
 
         ballot.candidates[candidateAddress].votesCount++;
         if (ballot.candidates[candidateAddress].votesCount > ballot.maxVotes) {
@@ -252,7 +252,7 @@ contract VotingContract is Ownable {
         Ballot storage ballot = ballots[ballotTitle];
         require(ballot.deadline != 0, "There is no such ballot!");
         require(ballot.deadline < block.timestamp, "This ballot has not reached its deadline yet!");
-        require(ballot.state == BallotState.Finished, "This ballot is still Active! Please use endVoting.");
+        require(ballot.state == BallotState.Finished, "This ballot must be Finished");
         require(ballot.feeWithdrawed == false, "You have already withdrawed the fee from this ballot!");
 
         address payable ownerAddress = payable(msg.sender);
