@@ -42,7 +42,7 @@ contract VotingContract is Ownable {
 
     }
 
-    enum BallotState { Active, Finished }
+    enum BallotState { Pending, Active, Finished }
 
     mapping(string => Ballot) public ballots;
 
@@ -221,13 +221,15 @@ contract VotingContract is Ownable {
         uint winnersAmount = winnersList.length;
         if (winnersAmount == 1) {
             address payable winnerAddress = payable(ballot.winnersList[0]);
-            winnerAddress.transfer((ballot.balance / 10) * 9);
+            (bool sent, ) = winnerAddress.call{value: (ballot.balance / 10) * 9, gas: 21000};
+            require(sent, "Failed to send Ether");
         } else {
             uint prizeMoney = (ballot.balance / 10) * 9;
             uint moneyPerWinner = prizeMoney / winnersAmount;
             for (uint index; index < winnersAmount; index++) {
                 address payable winnerAddress = payable(winnersList[index]);
-                winnerAddress.transfer(moneyPerWinner);
+                (bool sent, ) = winnerAddress.call{value: moneyPerWinner, gas: 21000};
+                require(sent, "Failed to send Ether");
                 ballot.balance -= moneyPerWinner;
             }
         }
@@ -250,7 +252,8 @@ contract VotingContract is Ownable {
         require(ballot.feeWithdrawed == false, "You have already withdrawed the fee from this ballot!");
 
         address payable ownerAddress = payable(msg.sender);
-        ownerAddress.transfer(ballot.balance);
+        (bool sent, ) = ownerAddress.call{value: ballot.balance};
+        require(sent, "Failed to send Ether");
         ballot.balance = 0;
         ballot.feeWithdrawed = true;
 
