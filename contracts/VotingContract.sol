@@ -6,10 +6,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract VotingContract is Ownable {
 
+    /* ========== STATE VARIABLES ========== */
+
     //Duration of ballots after which they can be finished manually
     uint constant DURATION = 3 days;
     //Fee to be able to vote for a candidate
     uint constant FEE = 10 ** 16; // wei
+    //Eth from non-ballot sources
+    uint private nonBallotContractBalance = 0;
 
     struct Candidate {
 
@@ -258,6 +262,21 @@ contract VotingContract is Ownable {
         ballot.feeWithdrawed = true;
 
         emit feeWithdrawed(ballotTitle, block.timestamp);
+    }
+
+    function withdrawNonBallotEth() external onlyOwner {
+        require(nonBallotContractBalance > 0, "nonBallotContractBalance is 0!");
+        (bool sent, ) = owner().call{value: nonBallotContractBalance, gas: 21000};
+        require(sent, "Failed to send Ether");
+        nonBallotContractBalance = 0;
+    }
+
+    function getNonBallotContractBalance() external onlyOwner returns(uint256) {
+        return nonBallotContractBalance;
+    }
+
+    receive() external payable{
+        nonBallotContractBalance += msg.value;
     }
 
 }
